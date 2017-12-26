@@ -56,6 +56,7 @@ UART_HandleTypeDef huart1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -68,6 +69,7 @@ static void MX_USART1_UART_Init(void);
 
 int main(void)
 {
+
 
   /* USER CODE BEGIN 1 */
 
@@ -91,8 +93,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
-
+  //MX_USART1_UART_Init();
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -102,20 +104,20 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-	  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-	  HAL_Delay(300);
-	  /*Configure GPIO pin Output Level */
-	  HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-	  HAL_Delay(300);
-	  /*Configure GPIO pin Output Level */
-	  HAL_GPIO_TogglePin(LED_WIFI_and_BLE_GPIO_Port, LED_WIFI_and_BLE_Pin);
-	  HAL_Delay(300);
+
+//	  /*Configure GPIO pin Output Level */
+//	  HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+//	  HAL_Delay(300);
+//	  /*Configure GPIO pin Output Level */
+//	  HAL_GPIO_TogglePin(LED_WIFI_and_BLE_GPIO_Port, LED_WIFI_and_BLE_Pin);
+//	  HAL_Delay(300);
   /* USER CODE BEGIN 3 */
 
   }
   /* USER CODE END 3 */
 
 }
+
 
 /** System Clock Configuration
 */
@@ -251,7 +253,26 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_WIFI_and_BLE_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : Push_Button */
+  GPIO_InitStruct.Pin = PUSHBUTTON_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(PUSHBUTTON_GPIO_Port, &GPIO_InitStruct);
+
+  /* Enable Interrupt on PC13   */
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
+
+
+/** NVIC Configuration
+*/
+static void MX_NVIC_Init(void)
+{
+  /* EXTI15_10_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+}
+
 
 /* USER CODE BEGIN 4 */
 

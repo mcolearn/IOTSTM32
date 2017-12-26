@@ -53,6 +53,8 @@
 #define LED2_GPIO_Port GPIOB
 #define LED_WIFI_and_BLE_Pin GPIO_PIN_9
 #define LED_WIFI_and_BLE_GPIO_Port GPIOC
+#define PUSHBUTTON_Pin GPIO_PIN_13
+#define PUSHBUTTON_GPIO_Port GPIOC
 
 /* ########################## Assert Selection ############################## */
 /**
