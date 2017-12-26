@@ -42,7 +42,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdint.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -77,10 +77,14 @@ void _Error_Handler(char *, int);
 }
 #endif
 
-/**
-  * @}
-  */ 
 
+#define WELCOME_MSG "Hello there"
+#define MAIN_MENU "Menu"
+#define PROMPT ">"
+
+ void printWelcomeMessage(void);
+ uint8_t readUserInput(void);
+ uint8_t processUserInput(uint8_t opt);
 /**
   * @}
 */ 
