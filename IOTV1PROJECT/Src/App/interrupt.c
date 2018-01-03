@@ -5,10 +5,11 @@
  *      Author: mehdi
  */
 
-#include "interrupt.h"
+#include "App/interrupt.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx.h"
 #include "stm32l4xx_it.h"
+#include "main.h"
 
 /**
   * @brief  EXTI line detection callback.
@@ -24,5 +25,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	/* NOTE: This function should not be modified, when the callback is needed,
 	 the HAL_GPIO_EXTI_Callback could be implemented in the user file
 	 */
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle) {
+/* Set transmission flag: transfer complete*/
+UartReady = SET;
 }
 
