@@ -82,9 +82,13 @@ void _Error_Handler(char *, int);
 #define MAIN_MENU "Menu"
 #define PROMPT ">"
 
+ uint8_t UartReady;
+
  void printWelcomeMessage(void);
  uint8_t readUserInput(void);
  uint8_t processUserInput(uint8_t opt);
+ uint8_t readUserInput(void);
+
 /**
   * @}
 */ 

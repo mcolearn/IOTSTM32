@@ -61,6 +61,9 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_NVIC_Init(void);
 
+
+
+
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -72,6 +75,7 @@ static void MX_NVIC_Init(void);
 
 int main(void) {
 	uint8_t opt = 0;
+
 	/* USER CODE BEGIN 1 */
 	/* USER CODE END 1 */
 	/* MCU Configuration----------------------------------------------------------*/
@@ -92,6 +96,7 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_USART1_UART_Init();
 	MX_NVIC_Init();
+	UartReady = SET;
 	/* USER CODE BEGIN 2 */
 
 	/* USER CODE END 2 */
@@ -100,16 +105,19 @@ int main(void) {
 	/* USER CODE BEGIN WHILE */
 //	printMessage:
 //	printWelcomeMessage();
-	printMessage: printWelcomeMessage();
+	printMessage:
+		printWelcomeMessage();
 	while (1) {
 
 		opt = readUserInput();
+
 
 		processUserInput(opt);
 
 		if (opt == 3)
 
 			goto printMessage;
+
 
 //	  /*Configure GPIO pin Output Level */
 //	  HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
@@ -132,16 +140,17 @@ void printWelcomeMessage(void) {
 	HAL_UART_Transmit(&huart1, (uint8_t*) MAIN_MENU, strlen(MAIN_MENU),
 	HAL_MAX_DELAY);
 }
-//
+
 uint8_t readUserInput(void) {
-	char readBuf[1];
-
-	HAL_UART_Transmit(&huart1, (uint8_t*) PROMPT, strlen(PROMPT),
-			HAL_MAX_DELAY);
-
-	HAL_UART_Receive(&huart1, (uint8_t*) readBuf, 1, HAL_MAX_DELAY);
-
-	return atoi(readBuf);
+	char readBuf[30];
+	int8_t retVal = -1;
+	if (UartReady == SET) {
+		UartReady = RESET;
+		HAL_UART_Receive_IT(&huart1, (uint8_t*) readBuf, 1);
+		retVal = atoi(readBuf);
+		HAL_UART_Transmit(&huart1, (uint8_t*) readBuf, strlen(readBuf), HAL_MAX_DELAY);
+	}
+	return retVal;
 }
 
 uint8_t processUserInput(uint8_t opt) {
@@ -248,6 +257,7 @@ static void MX_USART1_UART_Init(void) {
 
 }
 
+
 /** Configure pins as 
  * Analog
  * Input
@@ -262,6 +272,7 @@ static void MX_GPIO_Init(void) {
 	/* GPIO Ports Clock Enable */
 	__HAL_RCC_GPIOA_CLK_ENABLE()
 	;
+
 	__HAL_RCC_GPIOB_CLK_ENABLE()
 	;
 	__HAL_RCC_GPIOC_CLK_ENABLE()
@@ -304,8 +315,6 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(PUSHBUTTON_GPIO_Port, &GPIO_InitStruct);
 
-	/* Enable Interrupt on PC13   */
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
 /** NVIC Configuration
@@ -314,6 +323,9 @@ static void MX_NVIC_Init(void) {
 	/* EXTI15_10_IRQn interrupt configuration */
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	/* USART1_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(USART1_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
